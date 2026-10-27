@@ -40,13 +40,11 @@ describe.skipIf(!available)("comunidade: publicação, moderação e interaçõe
       slug: `burla-${Date.now()}`,
       title: "Tentativa de burla",
       subject_id: subject,
-      // @ts-expect-error coluna sem privilégio de escrita para o cliente
       status: "published",
     });
     expect(error?.code).toBe("42501");
     const counters = await autora.client
       .from("study_materials")
-      // @ts-expect-error coluna sem privilégio de escrita para o cliente
       .update({ views_count: 1000 })
       .eq("id", materialId);
     expect(counters.error?.code).toBe("42501");
@@ -182,7 +180,6 @@ describe.skipIf(!available)("aprendizagem: correção de quizzes e prazos de sim
     }
     const cheat = await aluna.client
       .from("quiz_answers")
-      // @ts-expect-error coluna de correção não é gravável pelo cliente
       .update({ is_correct: true })
       .eq("attempt_id", attempt!.id);
     expect(cheat.error?.code).toBe("42501");
