@@ -10,6 +10,9 @@ const messages: Record<string, { text: string; tone: "success" | "info" }> = {
   "conta-excluida": { text: "Sua conta foi excluída.", tone: "info" },
   "conversa-excluida": { text: "Conversa excluída.", tone: "info" },
   "material-excluido": { text: "Material excluído.", tone: "info" },
+  "baralho-excluido": { text: "Baralho excluído.", tone: "info" },
+  "quiz-excluido": { text: "Excluído.", tone: "info" },
+  "plano-excluido": { text: "Plano excluído.", tone: "info" },
 };
 
 /** Mostra avisos pontuais vindos de redirecionamentos (?bem-vindo=1) e limpa a URL. */

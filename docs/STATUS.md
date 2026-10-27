@@ -41,6 +41,27 @@ contra o Supabase local.
 substituído nos testes automatizados e com respostas interceptadas no navegador; a primeira execução com chave
 real deve ser acompanhada (qualidade das respostas, tempos e custo).
 
+## Fase 4 — Aprendizagem ✅
+
+| Item | Estado | Validação |
+| --- | --- | --- |
+| Flashcards com FSRS (agendamento no servidor, revisão atômica, recusa de revisão concorrente) | pronto | testes de unidade + integração + navegador |
+| Baralhos: criar, editar, suspender, importar lista (Anki/Quizlet), salvar a partir do estúdio | pronto | integração + navegador |
+| Revisão rápida, completa e por matéria, com atalhos de teclado e reaparição de cartões errados | pronto | navegador |
+| Quizzes: editor (múltipla escolha, V ou F, abertas), tentativas, correção no banco, revisão comentada | pronto | integração + navegador |
+| Simulados: cronômetro com compensação de relógio, navegação, marcação, salvamento automático, prazo no banco | pronto | integração + navegador |
+| Montagem de simulado com questões próprias (sem IA) e a partir do estúdio | pronto | navegador |
+| Abertas: correção por IA rotulada como automática; sem IA ou sem cota, autoavaliação | pronto | integração (autoavaliação) |
+| Relatório por tema, erros recorrentes, histórico de tentativas | pronto | navegador |
+| Plano de estudos: gerador com revisões espaçadas e reta final com simulados; reorganização de atrasos | pronto | testes de unidade + integração + navegador |
+| Cronômetro de foco com início gravado no servidor | pronto | navegador |
+| Calendário: recorrência, fuso, choque de horário, provas do plano, tarefas do dia | pronto | testes de unidade + integração + navegador |
+| Desempenho: indicadores, gráficos por dia, acertos por matéria, pontos fracos, tabela acessível | pronto | navegador |
+| XP no servidor com teto diário e idempotência; meta diária; conquistas | pronto | integração |
+
+Lembretes de eventos: o horário fica gravado; o envio (no app e por e-mail, se configurado) é feito pela rotina
+agendada da Fase 7.
+
 ## Integrações que dependem de credenciais
 
 - **IA**: `ANTHROPIC_API_KEY` (ou provedor compatível). Sem chave, os recursos de IA ficam desativados com aviso.

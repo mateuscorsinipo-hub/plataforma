@@ -141,6 +141,16 @@ Como funciona:
 - **Custo**: o padrão é o modelo mais capaz. Revise `AI_MODEL`, os limites em `plans.ts` e o esforço por tarefa
   em `src/lib/ai/config.ts` conforme o seu orçamento.
 
+## Aprendizagem
+
+- **Flashcards** usam FSRS (`ts-fsrs`): o servidor calcula o próximo agendamento com o próprio relógio e grava com
+  `apply_flashcard_review`, que recusa revisões fora de sequência (outra aba).
+- **Quizzes e simulados** compartilham as mesmas tabelas (`quizzes.kind`). A nota objetiva é calculada no banco
+  (`submit_quiz_attempt`); o prazo do simulado é conferido pelo RLS a cada resposta.
+- **XP** só é concedido pelo servidor (`award_xp`), com teto diário por tipo de atividade e um registro por evento.
+- **Tempo de estudo** vem de atividades verificáveis (revisões, tentativas e cronômetro de foco com início gravado
+  no servidor); concluir uma tarefa do plano rende XP, mas não soma minutos.
+
 ## Estrutura
 
 ```
@@ -155,7 +165,8 @@ src/
     config/            marca, planos e limites (fonte única), disciplinas
     data/              consultas por tela (camada de acesso a dados)
     documents/         detecção de tipo, extração, OCR, fatiamento e pipeline de processamento
-    domain/            regras puras e testáveis (datas, XP, plano de estudos...)
+    domain/            regras puras e testáveis (datas, XP, FSRS, gerador de plano, recorrência...)
+    progress/          XP, sessões de estudo, meta diária e conquistas (servidor)
     env/               variáveis públicas e de servidor
     security/          rate limiting, hashing, IP
     supabase/          clientes (navegador, servidor, admin, proxy) e tipos gerados

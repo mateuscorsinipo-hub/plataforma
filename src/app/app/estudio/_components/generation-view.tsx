@@ -6,6 +6,7 @@ import {
   DownloadIcon,
   EyeIcon,
   EyeOffIcon,
+  LayersIcon,
   PencilIcon,
   PrinterIcon,
   SaveIcon,
@@ -38,6 +39,8 @@ import { difficultyLabels, kindByName } from "@/lib/ai/studio/kinds";
 import type { GenerationDetail } from "@/lib/data/studio";
 import { cn } from "@/lib/utils";
 
+import { saveGenerationAsDeck } from "../../flashcards/actions";
+import { saveGenerationAsQuiz } from "../../quizzes/actions";
 import { deleteGeneration, renameGeneration, saveGenerationMarkdown } from "../actions";
 import { kindIcons } from "./kind-icons";
 
@@ -181,6 +184,21 @@ export function GenerationView({ generation, createdLabel }: { generation: Gener
 
         {completed ? (
           <div className="flex flex-wrap gap-2 print:hidden">
+            {generation.kind === "flashcards" || generation.kind === "quiz" || generation.kind === "mock_exam" ? (
+              <Button
+                size="sm"
+                disabled={pending}
+                onClick={() =>
+                  startTransition(async () => {
+                    const result = generation.kind === "flashcards" ? await saveGenerationAsDeck(generation.id) : await saveGenerationAsQuiz(generation.id);
+                    if (result && !result.ok) toast.error(result.error);
+                  })
+                }
+              >
+                <LayersIcon className="size-4" />
+                {generation.kind === "flashcards" ? "Revisar como baralho" : generation.kind === "quiz" ? "Fazer este quiz" : "Fazer este simulado"}
+              </Button>
+            ) : null}
             {isDocument && !editing ? (
               <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
                 <PencilIcon className="size-4" /> Editar
