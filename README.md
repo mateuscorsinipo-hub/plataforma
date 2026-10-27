@@ -111,6 +111,36 @@ npm run build && npm start
 | Pagamentos (Pro) | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_PRO_MONTHLY`, `NEXT_PUBLIC_PRO_PRICE_CENTS` | Plano Pro aparece como indisponível |
 | Login com Google | `NEXT_PUBLIC_AUTH_GOOGLE_ENABLED=true` + provedor ativo no Supabase | Botão não aparece |
 
+## Inteligência artificial
+
+Toda chamada ao modelo passa por `src/lib/ai` (nenhuma página usa SDK diretamente). Trocar de provedor é só
+variável de ambiente.
+
+| Variável | Uso |
+| --- | --- |
+| `AI_PROVIDER` | `anthropic` (padrão) ou `openai_compatible` (OpenAI, Maritaca, Groq, Ollama, vLLM…) |
+| `ANTHROPIC_API_KEY` | chave da Anthropic, só no servidor |
+| `AI_MODEL` / `AI_MODEL_LIGHT` | modelo principal (padrão `claude-opus-5-5`) e opcional para tarefas leves |
+| `OPENAI_API_KEY`, `OPENAI_BASE_URL`, `OPENAI_VISION` | provedor compatível; `OPENAI_VISION=true` se o modelo aceitar imagens |
+| `AI_REQUEST_TIMEOUT_MS` | tempo máximo de cada chamada (padrão 120 s) |
+
+Como funciona:
+
+- **Tutor** (`/api/ai/chat`): resposta em streaming (NDJSON), cancelável; histórico limitado por orçamento de
+  caracteres; documentos anexados viram trechos recuperados por busca textual em português e numerados — só
+  números realmente usados na resposta e existentes nas fontes são salvos como citação.
+- **Estúdio** (`/api/ai/generate`): 10 ferramentas com saída estruturada (JSON validado com Zod e conferido:
+  gabarito válido, alternativas únicas, quantidade pedida). Material acima de ~90 mil caracteres é condensado em
+  partes antes da geração. O progresso é transmitido em etapas.
+- **Arquivos**: o navegador envia direto ao Storage por URL assinada; o servidor confere o tipo real pelos bytes,
+  extrai texto de PDF, DOCX, PPTX e TXT/MD localmente, e usa o modelo apenas para fotos e PDFs digitalizados
+  (até 20 páginas). Fotos são regravadas sem metadados (EXIF/GPS).
+- **Consumo**: cada recurso reserva crédito antes de chamar a IA (`consume_usage`, transação com trava) e devolve
+  o crédito se a operação falhar sem entregar resultado. Limites por plano ficam só em `src/lib/config/plans.ts`.
+- **Sem chave configurada** as telas continuam funcionando e mostram que a IA está desativada; nada é simulado.
+- **Custo**: o padrão é o modelo mais capaz. Revise `AI_MODEL`, os limites em `plans.ts` e o esforço por tarefa
+  em `src/lib/ai/config.ts` conforme o seu orçamento.
+
 ## Estrutura
 
 ```
@@ -118,9 +148,13 @@ src/
   app/                 rotas (público, auth, onboarding, app, admin, api)
   components/          ui (primitivos), brand, site, app-shell, por domínio
   lib/
+    ai/                provedores, prompts, tutor, estúdio (esquemas, normalização, geração)
+    api/               proteção das rotas de API (sessão, origem, JSON)
     auth/              sessão, papéis, consentimento de responsáveis
+    billing/           plano efetivo, reserva e estorno de consumo
     config/            marca, planos e limites (fonte única), disciplinas
     data/              consultas por tela (camada de acesso a dados)
+    documents/         detecção de tipo, extração, OCR, fatiamento e pipeline de processamento
     domain/            regras puras e testáveis (datas, XP, plano de estudos...)
     env/               variáveis públicas e de servidor
     security/          rate limiting, hashing, IP
@@ -138,7 +172,10 @@ tests/
 - RLS em todas as tabelas; tabelas filhas usam FKs compostas `(id, user_id)` para impedir vínculos entre usuários.
 - Colunas sensíveis (status de conta, contadores, status de moderação, notas) não são graváveis pelo cliente.
 - XP, consumo de IA, visualizações e moderação só por funções executáveis com a chave secreta, no servidor.
-- Arquivos em bucket privado; envio apenas por URL assinada emitida pelo servidor.
+- Arquivos em bucket privado; envio apenas por URL assinada emitida pelo servidor; tipo real conferido pelos
+  bytes, proteção contra ZIP malicioso e limite de páginas, texto e pixels.
+- Rotas de API com cookie de sessão exigem JSON e mesma origem (CSRF); limites de requisição por usuário.
+- Texto de documentos vai ao modelo delimitado como dado, com instrução para ignorar comandos embutidos.
 - Menores: perfil privado por padrão, publicação e perfil público exigem 16 anos ou consentimento;
   abaixo de 12 anos a conta só é liberada com autorização do responsável (LGPD, art. 14).
 - Logs estruturados sem dados pessoais; CSP e cabeçalhos de segurança em `next.config.ts`.

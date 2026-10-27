@@ -242,6 +242,9 @@
 .prose-grifo > * + * {
   margin-top: 0.85em;
 }
+.prose-grifo > :first-child {
+  margin-top: 0;
+}
 .prose-grifo h1,
 .prose-grifo h2,
 .prose-grifo h3,

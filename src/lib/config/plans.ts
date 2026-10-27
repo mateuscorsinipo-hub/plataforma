@@ -66,7 +66,7 @@ export const plans: Record<PlanId, PlanDefinition> = {
 export const featureLabels: Record<UsageFeature, string> = {
   ai_chat_message: "Mensagens com o tutor",
   ai_generation: "Gerações no estúdio",
-  file_processing: "Arquivos processados",
+  file_processing: "Arquivos processados (PDF, Word, PowerPoint, fotos)",
   ai_grading: "Correções de dissertativas",
 };
 

@@ -27,6 +27,8 @@ export const serverEnv = {
     anthropicApiKey: process.env.ANTHROPIC_API_KEY ?? "",
     openaiApiKey: process.env.OPENAI_API_KEY ?? "",
     openaiBaseUrl: process.env.OPENAI_BASE_URL?.trim() || undefined,
+    /** O modelo do serviço compatível aceita imagens? Padrão: sim na OpenAI oficial, não nos demais. */
+    openaiVision: process.env.OPENAI_VISION ? process.env.OPENAI_VISION === "true" : !process.env.OPENAI_BASE_URL?.trim(),
     model,
     modelLight: process.env.AI_MODEL_LIGHT?.trim() || model,
     timeoutMs: readInt(process.env.AI_REQUEST_TIMEOUT_MS, 120_000, 10_000, 600_000),

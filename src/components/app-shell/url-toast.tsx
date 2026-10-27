@@ -8,6 +8,8 @@ const messages: Record<string, { text: string; tone: "success" | "info" }> = {
   "bem-vindo": { text: "Tudo pronto! Este é o seu painel.", tone: "success" },
   senha: { text: "Senha atualizada.", tone: "success" },
   "conta-excluida": { text: "Sua conta foi excluída.", tone: "info" },
+  "conversa-excluida": { text: "Conversa excluída.", tone: "info" },
+  "material-excluido": { text: "Material excluído.", tone: "info" },
 };
 
 /** Mostra avisos pontuais vindos de redirecionamentos (?bem-vindo=1) e limpa a URL. */
@@ -21,8 +23,9 @@ export function UrlToast() {
     if (!key) return;
     const message = messages[key];
     if (message) {
-      if (message.tone === "success") toast.success(message.text);
-      else toast(message.text);
+      // O id evita aviso duplicado quando o efeito roda duas vezes (modo estrito em desenvolvimento).
+      if (message.tone === "success") toast.success(message.text, { id: key });
+      else toast(message.text, { id: key });
     }
     const next = new URLSearchParams(params);
     next.delete(key);

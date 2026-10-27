@@ -9,20 +9,37 @@ contra o Supabase local.
 | --- | --- | --- |
 | Next.js 16 + TS estrito + Tailwind 4 + componentes shadcn/Radix | pronto | `typecheck`, `lint`, `build` |
 | Identidade visual Grifo (tokens, fontes self-hosted, logotipo, ícones PWA) | pronto | revisão visual |
-| Schema completo com RLS, FKs compostas, privilégios de coluna e funções de servidor | pronto | 36 testes em `tests/db` |
+| Schema completo com RLS, FKs compostas, privilégios de coluna e funções de servidor | pronto | testes em `tests/db` |
 | Cadastro com data de nascimento, aceite de termos e fluxo de responsável (< 12) | pronto | fluxo no navegador + testes |
 | Login, logout, confirmação de e-mail, recuperação e redefinição de senha | pronto | fluxo no navegador (Mailpit) |
 | Proteção de rotas (proxy) + verificação perto dos dados (DAL) | pronto | redirecionamento testado |
 | Landing, termos, privacidade, contato (com fila no banco), planos | pronto | navegador, sem overflow em 390 px |
 | PWA (manifest, ícones, service worker com página offline) | pronto | build |
 
-## Fase 2 — Experiência do estudante (em andamento)
+## Fase 2 — Experiência do estudante ✅
 
 | Item | Estado |
 | --- | --- |
 | Onboarding em 6 etapas (opcionais puláveis, provas no calendário) | pronto, validado no navegador |
 | Dashboard com dados reais e estados (novo, sem plano, com histórico) | pronto, validado no navegador |
-| Perfil, preferências, privacidade, exportação e exclusão de conta | próximo |
+| Perfil, preferências, privacidade, exportação (JSON) e exclusão de conta | pronto, validado no navegador |
+| Notificações | pronto |
+
+## Fase 3 — Inteligência artificial ✅
+
+| Item | Estado | Validação |
+| --- | --- | --- |
+| Camada de IA central (Anthropic padrão; OpenAI-compatível opcional), erros tipados, esforço por tarefa | pronto | tipos + testes de unidade |
+| Envio por URL assinada, detecção de tipo real, extração PDF/DOCX/PPTX/TXT, fatiamento com páginas | pronto | navegador + `tests/db/ai-flows` |
+| OCR de fotos e PDFs digitalizados (precisa de provedor com visão) | pronto | teste com provedor substituído |
+| Tutor: streaming, cancelamento, histórico, anexar documentos/fotos, citações verificadas, renomear, resumir, excluir | pronto | testes de integração + interface no navegador com respostas interceptadas |
+| Estúdio: 10 ferramentas, opções de dificuldade/tamanho/quantidade/foco, progresso por etapas, condensação de material longo | pronto | testes de integração |
+| Material gerado: visualização por tipo, edição em Markdown, exportação `.md`, impressão/PDF, renomear, excluir | pronto | navegador |
+| Consumo com reserva atômica e estorno em falha; limites centralizados por plano | pronto | testes de integração |
+
+**Não validado com IA real**: este ambiente não tem chave de provedor. Os fluxos foram testados com o provedor
+substituído nos testes automatizados e com respostas interceptadas no navegador; a primeira execução com chave
+real deve ser acompanhada (qualidade das respostas, tempos e custo).
 
 ## Integrações que dependem de credenciais
 
