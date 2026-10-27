@@ -1,0 +1,90 @@
+"use client";
+
+import { CreditCardIcon, LogOutIcon, SettingsIcon, ShieldCheckIcon, UserRoundIcon } from "lucide-react";
+import Link from "next/link";
+
+import { signOut } from "@/app/(auth)/actions";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/primitives";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+export function initialsOf(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  const first = parts[0]?.[0] ?? "?";
+  const last = parts.length > 1 ? (parts[parts.length - 1]?.[0] ?? "") : "";
+  return `${first}${last}`.toUpperCase();
+}
+
+export function UserMenu({
+  displayName,
+  username,
+  avatarUrl,
+  isStaff,
+}: {
+  displayName: string;
+  username: string;
+  avatarUrl: string | null;
+  isStaff: boolean;
+}) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        className="cursor-pointer rounded-full focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/40"
+        aria-label="Abrir menu da conta"
+      >
+        <Avatar className="size-10">
+          {avatarUrl ? <AvatarImage src={avatarUrl} alt="" /> : null}
+          <AvatarFallback>{initialsOf(displayName)}</AvatarFallback>
+        </Avatar>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-60">
+        <DropdownMenuLabel className="normal-case tracking-normal">
+          <span className="block truncate text-sm font-bold text-foreground">{displayName}</span>
+          <span className="block truncate text-xs font-medium text-muted-foreground">@{username}</span>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href={`/u/${username}`}>
+            <UserRoundIcon />
+            Meu perfil público
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/app/configuracoes">
+            <SettingsIcon />
+            Configurações
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/app/assinatura">
+            <CreditCardIcon />
+            Plano e consumo
+          </Link>
+        </DropdownMenuItem>
+        {isStaff ? (
+          <DropdownMenuItem asChild>
+            <Link href="/admin">
+              <ShieldCheckIcon />
+              Administração
+            </Link>
+          </DropdownMenuItem>
+        ) : null}
+        <DropdownMenuSeparator />
+        <form action={signOut}>
+          <DropdownMenuItem asChild destructive>
+            <button type="submit" className="w-full">
+              <LogOutIcon />
+              Sair
+            </button>
+          </DropdownMenuItem>
+        </form>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}

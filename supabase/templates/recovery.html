@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="pt-BR">
+  <body style="margin:0;padding:24px;background:#F6F7FB;font-family:Arial,Helvetica,sans-serif;color:#0E1B33;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;margin:0 auto;background:#FFFFFF;border:1px solid #E3E7F0;border-radius:16px;">
+      <tr>
+        <td style="padding:32px;">
+          <p style="margin:0 0 8px;font-size:22px;font-weight:bold;">grifo</p>
+          <h1 style="margin:0 0 16px;font-size:20px;">Redefinir senha</h1>
+          <p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:#3A4664;">
+            Recebemos um pedido para redefinir a senha da sua conta. O link vale por uma hora.
+          </p>
+          <p style="margin:0 0 24px;">
+            <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&next=/redefinir-senha"
+               style="display:inline-block;padding:12px 20px;background:#2453E6;color:#FFFFFF;border-radius:10px;text-decoration:none;font-weight:bold;">
+              Criar nova senha
+            </a>
+          </p>
+          <p style="margin:0;font-size:13px;line-height:1.6;color:#5B6785;">
+            Se você não pediu a troca de senha, ignore esta mensagem. Sua senha atual continua valendo.
+          </p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
