@@ -172,6 +172,20 @@ Como funciona:
 - **Pastas** (`/app/pastas`): juntam arquivos, itens do Estúdio, baralhos, quizzes, conversas e materiais salvos,
   com matéria e contagem regressiva para a prova. Excluir a pasta não apaga os itens.
 
+## Engajamento
+
+- **XP e níveis**: concedidos só no servidor (`award_xp`), com teto diário por atividade e um registro por evento.
+  Nível n exige 50·(n−1)² XP.
+- **Sequência**: dias seguidos com alguma atividade concluída; o calendário de constância mostra as últimas
+  quatro semanas e os dias em que a meta diária foi cumprida.
+- **Desafios semanais** (`src/lib/domain/challenges.ts`): três por semana, os mesmos para todos, em rodízio. As
+  métricas vêm de `weekly_activity`, que só lê dados gravados pelo servidor; o resgate recalcula o progresso e é
+  idempotente.
+- **Liga**: XP da semana (segunda a domingo, horário de Brasília). O ranking mostra só o @ de quem permite
+  aparecer; cada pessoa sempre vê a própria posição (`my_league_status`).
+- **Recomendações** (`src/lib/domain/recommendations.ts`): materiais dos temas com mais erros primeiro, depois
+  série, etapa e avaliação, sem repetir o que já foi salvo; o motivo aparece na tela.
+
 ## Estrutura
 
 ```

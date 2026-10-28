@@ -86,6 +86,25 @@ lista perfis privados sem materiais; perfis privados não mostram conquistas nem
 Pendente para a Fase 7: a fila de moderação (aprovar, pedir ajustes, remover, resolver denúncias) com aviso ao
 autor e XP na aprovação. Até lá, no modo `pre`, materiais enviados ficam "Em revisão".
 
+## Fase 6 — Engajamento ✅
+
+| Item | Estado | Validação |
+| --- | --- | --- |
+| Página de conquistas: nível com XP para o próximo, sequência e recorde, meta do dia | pronto | navegador (desktop e 390 px) |
+| Calendário de constância (4 semanas, dias com atividade e com meta cumprida) | pronto | navegador |
+| Conquistas com progresso real (`my_achievements`) e data de desbloqueio | pronto | integração |
+| Desafios semanais: 3 por semana em rodízio, metas ajustadas à meta diária, só atividade verificável, resgate idempotente | pronto | testes de unidade + integração + navegador |
+| Liga semanal: posição, ranking só com quem permite, o próprio usuário sempre se vê | pronto | integração + navegador |
+| Recomendações no painel: temas com mais erros, série, etapa, avaliação; exclui salvos; motivo visível | pronto | testes de unidade + navegador |
+
+Antiabuso: XP só pelo servidor, com teto diário por atividade e um registro por evento; desafios usam só dados que
+o usuário não grava diretamente (revisões, tentativas corrigidas pelo banco, sessões registradas pelo servidor);
+tarefas do plano, autodeclaradas, não contam para desafios. Limitação conhecida: quizzes criados pela própria
+pessoa contam (com o mínimo de 5 questões e os tetos diários de XP).
+
+Pendente para a Fase 7: a virada semanal das ligas (`rollover_leagues`) e o aviso de sequência em risco rodam na
+rotina agendada.
+
 ## Integrações que dependem de credenciais
 
 - **IA**: `ANTHROPIC_API_KEY` (ou provedor compatível). Sem chave, os recursos de IA ficam desativados com aviso.

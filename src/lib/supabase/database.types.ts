@@ -2860,6 +2860,31 @@ export type Database = {
         Returns: string;
       };
       level_for_xp: { Args: { p_xp: number }; Returns: number };
+      my_achievements: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          category: string;
+          code: string;
+          description: string;
+          icon: string;
+          progress: number;
+          sort_order: number;
+          threshold: number;
+          title: string;
+          unlocked_at: string;
+          xp_reward: number;
+        }[];
+      };
+      my_league_status: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          league: string;
+          members: number;
+          rank: number;
+          week_start: string;
+          xp: number;
+        }[];
+      };
       purge_expired_data: { Args: Record<PropertyKey, never>; Returns: Json };
       quiz_recurring_errors: {
         Args: { p_quiz_id: string };
@@ -3044,6 +3069,18 @@ export type Database = {
           isOneToOne: true;
           isSetofReturn: false;
         };
+      };
+      weekly_activity: {
+        Args: { p_from: string; p_to: string; p_tz?: string };
+        Returns: {
+          active_days: number;
+          correct_answers: number;
+          flashcard_reviews: number;
+          focus_sessions: number;
+          mock_exams: number;
+          quizzes_completed: number;
+          study_minutes: number;
+        }[];
       };
       withdraw_material: {
         Args: { p_material_id: string };

@@ -29,6 +29,7 @@ import { getShellData } from "@/lib/data/shell";
 import { getSubjectMap } from "@/lib/data/subjects";
 import { daysBetween, formatDateBR, greetingFor, localDateString, localHour, weekdayLabel } from "@/lib/domain/dates";
 import { leagueLabel } from "@/lib/domain/gamification";
+import { reasonLabel } from "@/lib/domain/recommendations";
 import { taskTypeLabels } from "@/lib/domain/study-plan";
 import { cn } from "@/lib/utils";
 
@@ -56,6 +57,8 @@ async function Dashboard() {
     userId: shell.userId,
     subjectIds: data.followedSubjects.map((s) => s.subjectId),
     schoolStage: profile.school_stage,
+    gradeYear: profile.grade_year,
+    weakTopics: data.weakTopics,
   });
 
   const firstName = shell.displayName.split(" ")[0] ?? shell.displayName;
@@ -332,18 +335,19 @@ async function Dashboard() {
             </p>
           ) : (
             <ul className="flex flex-col gap-2">
-              {recommendations.map((material) => {
+              {recommendations.map(({ item: material, reason }) => {
                 const subject = subjects.get(material.subject_id);
                 return (
                   <li key={material.id}>
                     <Link
-                      href={`/biblioteca/${material.slug}`}
+                      href={`/app/biblioteca/${material.slug}`}
                       className="flex items-center gap-3 rounded-2xl border border-border p-3.5 transition-colors hover:bg-muted/50"
                     >
                       <div className="flex min-w-0 flex-1 flex-col gap-1">
                         <strong className="truncate text-[0.9375rem]">{material.title}</strong>
                         <span className="text-xs text-muted-foreground">
-                          {subject?.name} · {materialTypeLabels[material.material_type as MaterialType]} · {material.saves_count + material.favorites_count} salvos
+                          <span className="font-semibold text-primary">{reasonLabel(reason)}</span> · {subject?.name} ·{" "}
+                          {materialTypeLabels[material.material_type as MaterialType]}
                         </span>
                       </div>
                       <ArrowRightIcon className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />

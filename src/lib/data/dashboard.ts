@@ -1,6 +1,7 @@
 import "server-only";
 
 import { addDays, dateRange, weekStart } from "@/lib/domain/dates";
+import { rankRecommendations } from "@/lib/domain/recommendations";
 import type { ShellData } from "@/lib/data/shell";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -101,23 +102,45 @@ export async function loadDashboard(shell: ShellData) {
   };
 }
 
-/** Materiais recomendados: matérias seguidas e etapa do estudante, mais salvos primeiro. */
-export async function loadRecommendations(params: { userId: string; subjectIds: string[]; schoolStage: string | null }) {
+/**
+ * Materiais recomendados: candidatos publicados nas matérias seguidas, ordenados pelas
+ * regras de src/lib/domain/recommendations (temas com mais erros, série, etapa, avaliação).
+ */
+export async function loadRecommendations(params: {
+  userId: string;
+  subjectIds: string[];
+  schoolStage: string | null;
+  gradeYear: number | null;
+  weakTopics: { subject_id: string | null; topic: string }[];
+}) {
   const supabase = await createSupabaseServerClient();
   let query = supabase
     .from("study_materials")
-    .select("id, slug, title, subject_id, material_type, school_stage, grade_year, saves_count, favorites_count, views_count")
+    .select("id, slug, title, subject_id, material_type, school_stage, grade_year, topic, tags, saves_count, favorites_count, rating_sum, rating_count")
     .eq("status", "published")
     .eq("visibility", "public")
     .neq("author_id", params.userId)
     .order("saves_count", { ascending: false })
     .order("published_at", { ascending: false })
-    .limit(3);
+    .limit(30);
   if (params.subjectIds.length) query = query.in("subject_id", params.subjectIds);
-  const { data } = await query;
-  let items = data ?? [];
-  if (params.schoolStage && items.length > 1) {
-    items = [...items].sort((a, b) => Number(b.school_stage === params.schoolStage) - Number(a.school_stage === params.schoolStage));
-  }
-  return items;
+  const [{ data }, { data: saved }] = await Promise.all([
+    query,
+    supabase.from("material_saves").select("material_id").eq("user_id", params.userId).limit(1000),
+  ]);
+  const candidates = (data ?? []).map((m) => ({
+    ...m,
+    subjectId: m.subject_id,
+    schoolStage: m.school_stage,
+    gradeYear: m.grade_year,
+    saves: m.saves_count + m.favorites_count,
+    ratingAverage: m.rating_count ? m.rating_sum / m.rating_count : null,
+    ratingCount: m.rating_count,
+  }));
+  return rankRecommendations(candidates, {
+    weakTopics: params.weakTopics.map((w) => ({ subjectId: w.subject_id, topic: w.topic })),
+    schoolStage: params.schoolStage,
+    gradeYear: params.gradeYear,
+    excludeIds: new Set((saved ?? []).map((s) => s.material_id)),
+  });
 }
