@@ -20,6 +20,7 @@ function isTopic(value: string | null): value is ContactTopic {
 export function ContactForm() {
   const params = useSearchParams();
   const initialTopic = params.get("assunto");
+  const initialUrl = params.get("url") ?? "";
   const [state, formAction] = useActionState(sendContactMessage, initialActionState);
   const [topic, setTopic] = useState<ContactTopic>(isTopic(initialTopic) ? initialTopic : "support");
   const errors = state.fieldErrors ?? {};
@@ -76,6 +77,7 @@ export function ContactForm() {
             type="url"
             inputMode="url"
             placeholder="https://"
+            defaultValue={/^https?:\/\//.test(initialUrl) ? initialUrl.slice(0, 500) : ""}
             {...fieldA11y("referenceUrl", errors.referenceUrl, true)}
           />
         </Field>

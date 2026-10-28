@@ -52,7 +52,7 @@ export function MarkdownView({ content, className, citationNumbers, citationIdPr
         <a
           href={href}
           className="font-medium text-primary underline underline-offset-2"
-          {...(external ? { target: "_blank", rel: "noopener noreferrer nofollow" } : {})}
+          {...(external ? { target: "_blank", rel: "noopener noreferrer nofollow ugc" } : {})}
         >
           {children}
         </a>

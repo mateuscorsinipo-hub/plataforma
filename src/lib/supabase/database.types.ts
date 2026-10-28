@@ -1103,6 +1103,62 @@ export type Database = {
           },
         ];
       };
+      material_events: {
+        Row: {
+          actor_id: string | null;
+          created_at: string;
+          event: string;
+          from_status: Database["public"]["Enums"]["material_status"] | null;
+          id: number;
+          material_id: string;
+          note: string | null;
+          to_status: Database["public"]["Enums"]["material_status"];
+        };
+        ComputedFields: never;
+        Insert: {
+          actor_id?: string | null;
+          created_at?: string;
+          event: string;
+          from_status?: Database["public"]["Enums"]["material_status"] | null;
+          id?: never;
+          material_id: string;
+          note?: string | null;
+          to_status: Database["public"]["Enums"]["material_status"];
+        };
+        Update: {
+          actor_id?: string | null;
+          created_at?: string;
+          event?: string;
+          from_status?: Database["public"]["Enums"]["material_status"] | null;
+          id?: never;
+          material_id?: string;
+          note?: string | null;
+          to_status?: Database["public"]["Enums"]["material_status"];
+        };
+        Relationships: [
+          {
+            foreignKeyName: "material_events_actor_id_fkey";
+            columns: ["actor_id"];
+            isOneToOne: false;
+            referencedRelation: "profile_cards";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "material_events_actor_id_fkey";
+            columns: ["actor_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "material_events_material_id_fkey";
+            columns: ["material_id"];
+            isOneToOne: false;
+            referencedRelation: "study_materials";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       material_ratings: {
         Row: {
           created_at: string;
@@ -2764,6 +2820,23 @@ export type Database = {
           isOneToOne: true;
           isSetofReturn: false;
         };
+      };
+      folder_summaries: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          color: string;
+          conversations_count: number;
+          created_at: string;
+          decks_count: number;
+          exam_date: string;
+          files_count: number;
+          generations_count: number;
+          id: string;
+          name: string;
+          quizzes_count: number;
+          saved_count: number;
+          subject_id: string;
+        }[];
       };
       get_league_leaderboard: {
         Args: { p_limit?: number };

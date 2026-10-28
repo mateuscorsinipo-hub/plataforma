@@ -31,6 +31,7 @@ export function StudioWorkspace({
   maxUploadBytes,
   maxCounts,
   generationsRemaining,
+  initialSelected = [],
 }: {
   initialFiles: FileSummary[];
   aiAvailable: boolean;
@@ -39,13 +40,16 @@ export function StudioWorkspace({
   maxUploadBytes: number;
   maxCounts: Record<GenerationKind, number>;
   generationsRemaining: number;
+  initialSelected?: string[];
 }) {
   const router = useRouter();
   const [files, setFiles] = useState(initialFiles);
   const [pending, setPending] = useState<PendingUpload[]>([]);
-  const [selected, setSelected] = useState<Set<string>>(
-    () => new Set(initialFiles.filter((f) => f.status === "ready").slice(0, 1).map((f) => f.id)),
-  );
+  const [selected, setSelected] = useState<Set<string>>(() => {
+    const ready = initialFiles.filter((f) => f.status === "ready");
+    const requested = ready.filter((f) => initialSelected.includes(f.id)).slice(0, maxSources);
+    return new Set((requested.length ? requested : ready.slice(0, 1)).map((f) => f.id));
+  });
   const [retrying, setRetrying] = useState<Set<string>>(new Set());
   const [dragging, setDragging] = useState(false);
   const [tool, setTool] = useState<KindDefinition | null>(null);

@@ -17,6 +17,8 @@ export const rateLimits = {
   upload: { limit: 30, windowSeconds: 600 },
   report: { limit: 20, windowSeconds: 3600 },
   materialView: { limit: 120, windowSeconds: 600 },
+  materialDownload: { limit: 60, windowSeconds: 600 },
+  profileSearch: { limit: 60, windowSeconds: 600 },
   guardianInvite: { limit: 3, windowSeconds: 86400 },
   publish: { limit: 20, windowSeconds: 3600 },
 } as const satisfies Record<string, RateLimitRule>;

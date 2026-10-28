@@ -323,6 +323,8 @@
   border: 1px solid var(--border);
   padding: 0.45em 0.7em;
   text-align: left;
+  /* Em tabela, "anywhere" quebraria palavras no meio; com break-word a tabela rola na horizontal. */
+  overflow-wrap: break-word;
 }
 .prose-grifo .katex-display {
   overflow-x: auto;

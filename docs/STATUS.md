@@ -62,6 +62,30 @@ real deve ser acompanhada (qualidade das respostas, tempos e custo).
 Lembretes de eventos: o horário fica gravado; o envio (no app e por e-mail, se configurado) é feito pela rotina
 agendada da Fase 7.
 
+## Fase 5 — Comunidade ✅
+
+| Item | Estado | Validação |
+| --- | --- | --- |
+| Biblioteca pública e no app: busca sem acentos, filtros na URL, atalhos por matéria, paginação, estados vazios | pronto | navegador + testes de unidade |
+| Página do material: Markdown com fórmulas, anexo (abrir/baixar por link temporário), relacionados, metadados e `noindex` quando não é público | pronto | navegador (desktop e 390 px) |
+| Favoritar, salvar, avaliar, denunciar, compartilhar; contadores mantidos pelo banco | pronto | integração + navegador |
+| Visualizações reais: uma por pessoa/visitante por dia, sem autor e sem robôs | pronto | navegador (contagem conferida no banco) |
+| Publicação: rascunho, pré-visualização, anexo, etiquetas, visibilidade, autoria, envio, despublicar, excluir | pronto | integração + navegador |
+| Moderação prévia ou posterior (configurável), volta para revisão ao editar, histórico sem expor moderadores | pronto | integração |
+| XP por publicação (uma vez por material, com teto diário) e conquista "Primeira contribuição" | pronto | integração |
+| Regra de idade/consentimento antecipada na tela e conferida no banco | pronto | integração + navegador |
+| Minhas denúncias com andamento | pronto | navegador |
+| Estudar com IA: cópia pessoal do material vira arquivo de estudo e abre o Estúdio já selecionado | pronto | integração + navegador |
+| Perfis públicos respeitando privacidade; busca de pessoas restrita e com limite | pronto | integração + navegador |
+| Pastas: criar, editar, excluir (sem apagar itens), adicionar e retirar itens de seis tipos, prova com contagem regressiva | pronto | integração + navegador |
+
+Correções de segurança desta fase: `has_guardian_consent` deixou de revelar a qualquer visitante quais contas
+têm consentimento de responsável (agora roda com o RLS de quem pergunta); a busca de perfis escapa curingas e não
+lista perfis privados sem materiais; perfis privados não mostram conquistas nem data de entrada.
+
+Pendente para a Fase 7: a fila de moderação (aprovar, pedir ajustes, remover, resolver denúncias) com aviso ao
+autor e XP na aprovação. Até lá, no modo `pre`, materiais enviados ficam "Em revisão".
+
 ## Integrações que dependem de credenciais
 
 - **IA**: `ANTHROPIC_API_KEY` (ou provedor compatível). Sem chave, os recursos de IA ficam desativados com aviso.

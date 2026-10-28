@@ -13,6 +13,8 @@ const messages: Record<string, { text: string; tone: "success" | "info" }> = {
   "baralho-excluido": { text: "Baralho excluído.", tone: "info" },
   "quiz-excluido": { text: "Excluído.", tone: "info" },
   "plano-excluido": { text: "Plano excluído.", tone: "info" },
+  "pasta-excluida": { text: "Pasta excluída. Os itens continuam no app.", tone: "info" },
+  "publicacao-excluida": { text: "Material excluído da biblioteca.", tone: "info" },
 };
 
 /** Mostra avisos pontuais vindos de redirecionamentos (?bem-vindo=1) e limpa a URL. */

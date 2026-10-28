@@ -151,6 +151,27 @@ Como funciona:
 - **Tempo de estudo** vem de atividades verificáveis (revisões, tentativas e cronômetro de foco com início gravado
   no servidor); concluir uma tarefa do plano rende XP, mas não soma minutos.
 
+## Comunidade e organização
+
+- **Biblioteca** (`/biblioteca`, pública e indexável; `/app/biblioteca` dentro do app): busca sem acentos com
+  `search_materials`, filtros na URL (matéria, etapa, série, tipo, tema, ordem), paginação e materiais relacionados.
+- **Publicação** (`/app/materiais`): rascunho, pré-visualização em Markdown, anexo (passa pelo mesmo processamento
+  dos envios, com fotos regravadas sem metadados), etiquetas, visibilidade (pública, por link, privada) e declaração
+  de autoria. `submit_material` confere tudo de novo no banco, inclusive a idade mínima ou o consentimento do
+  responsável. O modo de moderação (`moderation_mode` em `app_settings`) decide se o envio vai para revisão
+  (`pre`, padrão) ou publica na hora (`post`); editar conteúdo publicado no modo `pre` volta para revisão.
+- **Histórico** de cada material em `material_events` (o autor vê os passos, nunca quem moderou).
+- **Interações**: favoritar, salvar, avaliar (1–5, nunca o próprio), denunciar (uma denúncia aberta por pessoa;
+  três pessoas diferentes tiram o material do ar até a revisão) e compartilhar. Visualizações são contadas pelo
+  servidor, uma por pessoa ou visitante por dia, sem o autor e sem robôs; nenhum número é inventado.
+- **Estudar com IA**: cria uma cópia pessoal do material (texto e anexo) entre os arquivos de estudo e abre o
+  Estúdio com ela escolhida.
+- **Perfis** (`/u/<usuario>`): perfil privado mostra só o @ e os materiais públicos; nome, foto, bio, matérias,
+  estatísticas e conquistas dependem das escolhas de privacidade. Perfis não são indexados por buscadores e a busca
+  de pessoas só encontra perfis públicos ou quem já assina materiais públicos.
+- **Pastas** (`/app/pastas`): juntam arquivos, itens do Estúdio, baralhos, quizzes, conversas e materiais salvos,
+  com matéria e contagem regressiva para a prova. Excluir a pasta não apaga os itens.
+
 ## Estrutura
 
 ```
@@ -188,5 +209,10 @@ tests/
 - Rotas de API com cookie de sessão exigem JSON e mesma origem (CSRF); limites de requisição por usuário.
 - Texto de documentos vai ao modelo delimitado como dado, com instrução para ignorar comandos embutidos.
 - Menores: perfil privado por padrão, publicação e perfil público exigem 16 anos ou consentimento;
-  abaixo de 12 anos a conta só é liberada com autorização do responsável (LGPD, art. 14).
+  abaixo de 12 anos a conta só é liberada com autorização do responsável (LGPD, art. 14). Ninguém consegue
+  consultar se outra conta tem consentimento de responsável (a função roda com o RLS de quem pergunta).
+- Fotos de perfil só são exibidas quando vêm do bucket de avatares do próprio projeto (o campo é editável e uma
+  URL externa serviria para rastrear quem abre o perfil); a CSP bloqueia outras origens.
+- Arquivos anexados a materiais saem por link temporário, emitido depois de conferir a visibilidade com a sessão
+  de quem pede, com limite de downloads por pessoa.
 - Logs estruturados sem dados pessoais; CSP e cabeçalhos de segurança em `next.config.ts`.

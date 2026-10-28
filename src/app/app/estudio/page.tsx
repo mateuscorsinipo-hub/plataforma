@@ -11,7 +11,7 @@ import { getAIStatus } from "@/lib/ai/availability-notice";
 import { generationKinds, kindByName, maxCountFor, type GenerationKind } from "@/lib/ai/studio/kinds";
 import { requireStudent } from "@/lib/auth/session";
 import { getPlanForUser, getUsageSummary, getUserTimezone } from "@/lib/billing/entitlements";
-import { listStudyFiles } from "@/lib/data/files";
+import { getReadyFiles, listStudyFiles } from "@/lib/data/files";
 import { listGenerations } from "@/lib/data/studio";
 import { formatDateBR, localDateString } from "@/lib/domain/dates";
 
@@ -20,7 +20,7 @@ import { StudioWorkspace } from "./_components/studio-workspace";
 
 export const metadata: Metadata = { title: "Estúdio de IA" };
 
-export default function StudioPage() {
+export default function StudioPage({ searchParams }: PageProps<"/app/estudio">) {
   return (
     <div className="flex flex-col gap-6">
       <Suspense>
@@ -32,21 +32,28 @@ export default function StudioPage() {
         description="Envie arquivos ou fotos e gere resumos, guias, flashcards, quizzes e simulados a partir do seu próprio conteúdo."
       />
       <Suspense fallback={<StudioSkeleton />}>
-        <Studio />
+        <Studio searchParams={searchParams} />
       </Suspense>
     </div>
   );
 }
 
-async function Studio() {
+async function Studio({ searchParams }: { searchParams: PageProps<"/app/estudio">["searchParams"] }) {
   const { user } = await requireStudent("/app/estudio");
-  const [ai, plan, timezone, files, generations] = await Promise.all([
+  const params = await searchParams;
+  // ?arquivos=id1,id2 vem da biblioteca e das pastas: já deixa esses arquivos escolhidos.
+  const raw = Array.isArray(params.arquivos) ? params.arquivos[0] : params.arquivos;
+  const requested = (raw ?? "").split(",").filter((id) => /^[0-9a-f-]{36}$/i.test(id)).slice(0, 20);
+  const [ai, plan, timezone, recent, generations, requestedFiles] = await Promise.all([
     getAIStatus(),
     getPlanForUser(user.id),
     getUserTimezone(user.id),
     listStudyFiles({ limit: 80 }),
     listGenerations(40),
+    getReadyFiles(requested),
   ]);
+  // Arquivos pedidos que não estão entre os mais recentes entram no topo da lista.
+  const files = [...requestedFiles.filter((f) => !recent.some((r) => r.id === f.id)), ...recent];
   const usage = await getUsageSummary(user.id, plan, timezone);
   const maxCounts = Object.fromEntries(generationKinds.map((k) => [k.kind, maxCountFor(k.kind, plan)])) as Record<GenerationKind, number>;
   const gen = usage.ai_generation;
@@ -61,6 +68,7 @@ async function Studio() {
           </Alert>
         ) : null}
         <StudioWorkspace
+          key={requested.join(",")}
           initialFiles={files}
           aiAvailable={ai.available}
           supportsImages={ai.supportsImages}
@@ -68,6 +76,7 @@ async function Studio() {
           maxUploadBytes={plan.maxUploadBytes}
           maxCounts={maxCounts}
           generationsRemaining={gen.remaining}
+          initialSelected={requested}
         />
       </div>
 

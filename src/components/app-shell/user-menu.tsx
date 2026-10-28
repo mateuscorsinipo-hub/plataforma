@@ -4,6 +4,7 @@ import { CreditCardIcon, LogOutIcon, SettingsIcon, ShieldCheckIcon, UserRoundIco
 import Link from "next/link";
 
 import { signOut } from "@/app/(auth)/actions";
+import { initialsOf, safeAvatarUrl } from "@/lib/avatar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/primitives";
 import {
   DropdownMenu,
@@ -13,13 +14,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-export function initialsOf(name: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  const first = parts[0]?.[0] ?? "?";
-  const last = parts.length > 1 ? (parts[parts.length - 1]?.[0] ?? "") : "";
-  return `${first}${last}`.toUpperCase();
-}
 
 export function UserMenu({
   displayName,
@@ -39,7 +33,7 @@ export function UserMenu({
         aria-label="Abrir menu da conta"
       >
         <Avatar className="size-10">
-          {avatarUrl ? <AvatarImage src={avatarUrl} alt="" /> : null}
+          {safeAvatarUrl(avatarUrl) ? <AvatarImage src={safeAvatarUrl(avatarUrl)!} alt="" /> : null}
           <AvatarFallback>{initialsOf(displayName)}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>

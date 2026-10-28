@@ -4,7 +4,7 @@ import { CameraIcon, Trash2Icon } from "lucide-react";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 
-import { initialsOf } from "@/components/app-shell/user-menu";
+import { initialsOf } from "@/lib/avatar";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/primitives";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
