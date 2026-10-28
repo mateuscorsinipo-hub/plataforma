@@ -73,4 +73,7 @@ function SubjectChip({
   );
 }
 
-export { SubjectChip, SubjectIcon };
+/** Nomes de ícone aceitos para matérias (usados também no painel administrativo). */
+const subjectIconNames = Object.keys(icons);
+
+export { SubjectChip, SubjectIcon, subjectIconNames };

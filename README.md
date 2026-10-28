@@ -101,6 +101,30 @@ npm run build && npm start
 3. Em **Authentication → Email Templates**, use os modelos de `supabase/templates/` (apontam para `/auth/confirm`).
 4. Configure um SMTP próprio no Supabase (o padrão tem limite baixo de envio).
 5. Cadastre as variáveis de `.env.example` no provedor de hospedagem.
+6. Defina `CRON_SECRET` (32+ caracteres aleatórios). O `vercel.json` agenda as rotinas e a Vercel envia o
+   segredo no cabeçalho `Authorization`. No plano Hobby da Vercel só há execução diária: os lembretes do
+   calendário (a cada 10 min) exigem o plano Pro ou outro agendador chamando `GET /api/cron/lembretes` com
+   `Authorization: Bearer <CRON_SECRET>`.
+
+### Rotinas agendadas
+
+| Rotina | Quando | O que faz |
+| --- | --- | --- |
+| `/api/cron/lembretes` | a cada 10 min | Lembretes de eventos do calendário (no app; por e-mail se a pessoa ativou e o Resend estiver configurado) e aviso de sequência em risco entre 19h e 22h no fuso de cada pessoa |
+| `/api/cron/limpeza` | diária | Limites de requisição vencidos, visualizações antigas, consentimentos expirados, envios abandonados, imagens do chat sem mensagem e notificações lidas há mais de 180 dias |
+| `/api/cron/ligas` | segunda, 00h10 (Brasília) | Virada da liga da semana anterior (uma única vez por semana) e aviso a quem subiu ou desceu |
+
+### Pagamentos (Stripe)
+
+1. Crie um produto com preço mensal recorrente em BRL e copie o ID do preço para `STRIPE_PRICE_PRO_MONTHLY`.
+2. Crie um endpoint de webhook para `https://seu-dominio/api/billing/webhook` com os eventos
+   `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`,
+   `customer.subscription.deleted` e `invoice.payment_failed`; copie o segredo para `STRIPE_WEBHOOK_SECRET`.
+3. Ative o portal do cliente (Customer Portal) no painel do Stripe para troca de cartão e cancelamento.
+4. Defina `NEXT_PUBLIC_PRO_PRICE_CENTS` com o mesmo valor do preço (é só o texto exibido).
+
+O plano muda apenas quando o webhook (com assinatura verificada) confirma a assinatura; cada evento é processado
+uma vez e a assinatura é relida na API do Stripe, então a ordem de chegada dos eventos não importa.
 
 ## Configurações opcionais
 
@@ -185,6 +209,19 @@ Como funciona:
   aparecer; cada pessoa sempre vê a própria posição (`my_league_status`).
 - **Recomendações** (`src/lib/domain/recommendations.ts`): materiais dos temas com mais erros primeiro, depois
   série, etapa e avaliação, sem repetir o que já foi salvo; o motivo aparece na tela.
+
+## Administração
+
+A área `/admin` (papéis `moderator` e `admin`, lidos de `user_roles` a cada página e ação) tem:
+
+- **Visão geral** com indicadores lidos do banco e o estado das integrações (sem exibir segredos).
+- **Moderação** da fila de materiais: aprovar (publica, avisa o autor e concede o XP), pedir ajustes ou remover
+  com motivo obrigatório. Ninguém aprova o próprio material.
+- **Denúncias** agrupadas por material: manter (devolve ao ar o que saiu por denúncias), arquivar ou remover.
+- **Usuários**: busca por @, nome ou e-mail; suspender e reativar (bloqueia também o login no Supabase Auth),
+  papéis de moderação e Pro de cortesia (só admin). Moderadores não agem sobre a equipe nem sobre si mesmos.
+- **Contato**, **Matérias**, **Configurações** (moderação prévia/posterior, limite de denúncias, idades) e
+  **Auditoria** com todas as ações administrativas (quem, o quê, em quem e por quê).
 
 ## Estrutura
 

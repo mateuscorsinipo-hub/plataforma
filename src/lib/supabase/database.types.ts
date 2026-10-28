@@ -1103,6 +1103,25 @@ export type Database = {
           },
         ];
       };
+      league_rollovers: {
+        Row: {
+          changed: number;
+          processed_at: string;
+          week_start: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          changed?: number;
+          processed_at?: string;
+          week_start: string;
+        };
+        Update: {
+          changed?: number;
+          processed_at?: string;
+          week_start?: string;
+        };
+        Relationships: [];
+      };
       material_events: {
         Row: {
           actor_id: string | null;
@@ -2734,6 +2753,20 @@ export type Database = {
         Args: { p_metric: string; p_user_id: string };
         Returns: number;
       };
+      admin_find_users: {
+        Args: { p_limit?: number; p_query: string };
+        Returns: {
+          account_status: Database["public"]["Enums"]["account_status"];
+          birth_date: string;
+          created_at: string;
+          display_name: string;
+          email: string;
+          id: string;
+          last_sign_in_at: string;
+          roles: string[];
+          username: string;
+        }[];
+      };
       age_in_years: { Args: { p_birth: string }; Returns: number };
       apply_flashcard_review: {
         Args: {
@@ -2886,6 +2919,16 @@ export type Database = {
         }[];
       };
       purge_expired_data: { Args: Record<PropertyKey, never>; Returns: Json };
+      purge_old_notifications: {
+        Args: Record<PropertyKey, never>;
+        Returns: number;
+      };
+      purge_orphan_uploads: {
+        Args: { p_older_than?: string };
+        Returns: {
+          storage_path: string;
+        }[];
+      };
       quiz_recurring_errors: {
         Args: { p_quiz_id: string };
         Returns: {
@@ -2946,6 +2989,14 @@ export type Database = {
         };
       };
       rollover_leagues: { Args: { p_week_start: string }; Returns: number };
+      run_league_rollover: {
+        Args: { p_week_start: string };
+        Returns: {
+          new_league: string;
+          old_league: string;
+          user_id: string;
+        }[];
+      };
       search_document_chunks: {
         Args: { p_file_ids: string[]; p_limit?: number; p_query: string };
         Returns: {

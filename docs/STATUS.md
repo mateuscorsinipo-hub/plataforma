@@ -59,8 +59,8 @@ real deve ser acompanhada (qualidade das respostas, tempos e custo).
 | Desempenho: indicadores, gráficos por dia, acertos por matéria, pontos fracos, tabela acessível | pronto | navegador |
 | XP no servidor com teto diário e idempotência; meta diária; conquistas | pronto | integração |
 
-Lembretes de eventos: o horário fica gravado; o envio (no app e por e-mail, se configurado) é feito pela rotina
-agendada da Fase 7.
+Lembretes de eventos: o envio (no app e por e-mail, se configurado) é feito pela rotina agendada
+`/api/cron/lembretes` (Fase 7).
 
 ## Fase 5 — Comunidade ✅
 
@@ -83,8 +83,7 @@ Correções de segurança desta fase: `has_guardian_consent` deixou de revelar a
 têm consentimento de responsável (agora roda com o RLS de quem pergunta); a busca de perfis escapa curingas e não
 lista perfis privados sem materiais; perfis privados não mostram conquistas nem data de entrada.
 
-Pendente para a Fase 7: a fila de moderação (aprovar, pedir ajustes, remover, resolver denúncias) com aviso ao
-autor e XP na aprovação. Até lá, no modo `pre`, materiais enviados ficam "Em revisão".
+A fila de moderação (aprovar com XP e aviso ao autor, pedir ajustes, remover, resolver denúncias) entrou na Fase 7.
 
 ## Fase 6 — Engajamento ✅
 
@@ -102,8 +101,26 @@ o usuário não grava diretamente (revisões, tentativas corrigidas pelo banco, 
 tarefas do plano, autodeclaradas, não contam para desafios. Limitação conhecida: quizzes criados pela própria
 pessoa contam (com o mínimo de 5 questões e os tetos diários de XP).
 
-Pendente para a Fase 7: a virada semanal das ligas (`rollover_leagues`) e o aviso de sequência em risco rodam na
-rotina agendada.
+A virada semanal das ligas e o aviso de sequência em risco rodam nas rotinas agendadas da Fase 7
+(`/api/cron/ligas` e `/api/cron/lembretes`), que precisam ser agendadas na hospedagem.
+
+## Fase 7 — Monetização e administração ✅
+
+| Item | Estado | Validação |
+| --- | --- | --- |
+| Página de assinatura: plano, situação, uso do período, comparação e histórico de consumo | pronto | navegador |
+| Checkout e portal do Stripe (desligados sem credenciais; nenhuma cobrança simulada) | pronto, depende de credenciais | tipos; sem chamada real ao Stripe |
+| Webhook com assinatura verificada, idempotência por evento e releitura da assinatura | pronto | integração com eventos assinados com segredo de teste e API simulada |
+| Pro de cortesia (manual) e encerramento, com auditoria | pronto | integração |
+| Área administrativa com papel lido do banco em cada página e ação | pronto | integração + navegador |
+| Moderação (aprovar com XP e aviso, pedir ajustes, remover) e bloqueio de autoaprovação | pronto | integração + navegador |
+| Denúncias (manter, arquivar, remover) com retorno ao ar do material escondido automaticamente | pronto | integração |
+| Usuários: busca com e-mail só pela chave do servidor, suspensão com bloqueio de login, papéis | pronto | integração + navegador |
+| Contato, matérias, configurações validadas e auditoria completa | pronto | integração + navegador |
+| Rotinas: lembretes (no app e por e-mail), sequência em risco, limpeza, virada da liga idempotente | pronto | testes de unidade + integração |
+
+**Não validado de ponta a ponta**: o pagamento real no Stripe (exige conta, preço e webhook configurados) e o envio
+de e-mails pelo Resend. Os dois estão implementados e desligados até as credenciais existirem.
 
 ## Integrações que dependem de credenciais
 

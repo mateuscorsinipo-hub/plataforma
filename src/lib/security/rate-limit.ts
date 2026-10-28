@@ -21,6 +21,7 @@ export const rateLimits = {
   profileSearch: { limit: 60, windowSeconds: 600 },
   guardianInvite: { limit: 3, windowSeconds: 86400 },
   publish: { limit: 20, windowSeconds: 3600 },
+  checkout: { limit: 10, windowSeconds: 3600 },
 } as const satisfies Record<string, RateLimitRule>;
 
 /**
