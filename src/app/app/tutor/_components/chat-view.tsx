@@ -280,7 +280,7 @@ export function ChatView({
         </div>
         <Button variant="outline" size="sm" onClick={() => setSourcesOpen(true)} disabled={!ai.available}>
           <FileTextIcon className="size-4" />
-          <span className="hidden sm:inline">Documentos</span>
+          <span className="sr-only sm:not-sr-only">Documentos</span>
           {sources.length ? <span className="rounded-md bg-secondary px-1.5 text-xs text-secondary-foreground">{sources.length}</span> : null}
         </Button>
         {conversationId ? (
@@ -421,6 +421,8 @@ export function ChatView({
                 multiple
                 className="sr-only"
                 tabIndex={-1}
+                aria-hidden="true"
+                aria-label="Anexar imagens"
                 onChange={(event) => {
                   void addImages(event.target.files);
                   event.target.value = "";

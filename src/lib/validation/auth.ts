@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-import { brand } from "@/lib/config/brand";
+import { CHILD_AGE_LIMIT, ageOn } from "@/lib/validation/age";
 
-export const CHILD_AGE_LIMIT = brand.minimumAge;
+export { CHILD_AGE_LIMIT, ageOn } from "@/lib/validation/age";
 
 export const passwordSchema = z
   .string()
@@ -15,16 +15,6 @@ export const emailSchema = z
   .trim()
   .toLowerCase()
   .pipe(z.email("Informe um e-mail válido.").max(254, "E-mail muito longo."));
-
-/** Idade completa em anos numa data de referência (padrão: hoje, UTC). */
-export function ageOn(birthDate: string, reference = new Date()): number {
-  const [y, m, d] = birthDate.split("-").map((part) => Number.parseInt(part, 10));
-  if (!y || !m || !d) return Number.NaN;
-  let age = reference.getUTCFullYear() - y;
-  const monthDiff = reference.getUTCMonth() + 1 - m;
-  if (monthDiff < 0 || (monthDiff === 0 && reference.getUTCDate() < d)) age -= 1;
-  return age;
-}
 
 export const birthDateSchema = z
   .string({ error: "Informe sua data de nascimento." })

@@ -5,7 +5,6 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { publicEnv } from "@/lib/env/public";
-import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 /** Exibido apenas quando NEXT_PUBLIC_AUTH_GOOGLE_ENABLED=true (provedor configurado no Supabase). */
 export function GoogleButton({ next }: { next: string }) {
@@ -14,6 +13,8 @@ export function GoogleButton({ next }: { next: string }) {
 
   async function handleClick() {
     setPending(true);
+    // Carregado só no clique: o cliente do Supabase pesa ~70 KB e as páginas de login não precisam dele.
+    const { createSupabaseBrowserClient } = await import("@/lib/supabase/browser");
     const supabase = createSupabaseBrowserClient();
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",

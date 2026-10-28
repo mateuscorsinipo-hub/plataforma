@@ -305,6 +305,7 @@ export function MaterialEditor({
               className="sr-only"
               tabIndex={-1}
               aria-hidden="true"
+              aria-label="Enviar arquivo"
               onChange={(e) => {
                 const file = e.target.files?.[0];
                 e.target.value = "";

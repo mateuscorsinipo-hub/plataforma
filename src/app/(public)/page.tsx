@@ -382,9 +382,9 @@ function HeroPreview() {
           <span className="text-xs text-muted-foreground">Fonte: p. 3</span>
         </div>
         <div className="flex flex-col gap-2.5 rounded-[18px] bg-primary p-4 text-primary-foreground">
-          <span className="text-xs font-bold tracking-[0.06em] text-[#cfdbff] uppercase">Flashcard</span>
+          <span className="text-xs font-bold tracking-[0.06em] text-[#e3eaff] uppercase">Flashcard</span>
           <p className="text-[0.9375rem] leading-snug font-bold">Onde ocorre a síntese de proteínas?</p>
-          <span className="text-xs text-[#cfdbff]">12 cartões · revisão amanhã</span>
+          <span className="text-xs text-[#e3eaff]">12 cartões · revisão amanhã</span>
         </div>
         <div className="flex flex-col gap-2 rounded-[18px] border border-border bg-card p-4">
           <span className="text-xs font-bold tracking-[0.06em] text-muted-foreground uppercase">Quiz</span>

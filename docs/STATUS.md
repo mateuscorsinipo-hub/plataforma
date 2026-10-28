@@ -122,6 +122,26 @@ A virada semanal das ligas e o aviso de sequência em risco rodam nas rotinas ag
 **Não validado de ponta a ponta**: o pagamento real no Stripe (exige conta, preço e webhook configurados) e o envio
 de e-mails pelo Resend. Os dois estão implementados e desligados até as credenciais existirem.
 
+## Fase 8 — Qualidade ✅
+
+| Item | Estado | Validação |
+| --- | --- | --- |
+| Ponta a ponta com Playwright em desktop e celular (Pixel 7), contra o build de produção | pronto | 26 testes |
+| Acessibilidade: axe (WCAG 2.1 AA) em todas as páginas públicas e nas principais do app, sem rolagem lateral | pronto | e2e; corrigidos contraste, nomes acessíveis (WCAG 2.5.3), botões só com ícone e campos de arquivo sem rótulo |
+| Links internos: todos os links das páginas públicas e do app seguidos atrás de 404 | pronto | e2e; corrigido um link morto no painel |
+| Jornada do estudante: baralho, revisão até o fim, pasta e material | pronto | e2e |
+| Proteção de rotas, redirecionamento aberto e página 404 | pronto | e2e |
+| Auditoria automática do esquema: RLS, `search_path`, funções privilegiadas revisadas, views, escrita de clientes, colunas sensíveis, buckets | pronto | 9 testes; validada injetando 4 brechas (todas acusadas) |
+| Endurecimento do banco: sem `TRUNCATE` para clientes, tabelas do servidor sem privilégio de escrita, preferências com colunas restritas | pronto | migração `20261028000300_security_review.sql` + auditoria |
+| Login: limites por conta + IP, por conta (ataque distribuído) e por IP (alto, para escolas atrás de NAT) | pronto | testes de banco com a função real de rate limit |
+| Busca de segredos no que vai para o navegador, ao fim de todo build | pronto | validada injetando uma chave falsa (acusada por valor e por formato) |
+| Desempenho das páginas públicas: ~215 KB de JS comprimido, LCP ~1,0 s e CLS ≈ 0 no celular com 4G lento e CPU 4× | pronto | medição local no build de produção; login, cadastro e contato deixaram de carregar o cliente do Supabase e o zod (−98 KB no login) |
+| CI no GitHub Actions: tipos, lint, unidade, banco do zero, build e e2e | pronto | arquivo versionado; a primeira execução depende do GitHub Actions habilitado no repositório |
+
+**Limites desta validação**: o desempenho foi medido em localhost (sem latência real nem CDN) e não houve
+auditoria com Lighthouse nem teste de carga. Os testes ponta a ponta rodam sem IA, Stripe e Resend
+configurados: cobrem os estados "desligado" dessas integrações, não as chamadas reais.
+
 ## Integrações que dependem de credenciais
 
 - **IA**: `ANTHROPIC_API_KEY` (ou provedor compatível). Sem chave, os recursos de IA ficam desativados com aviso.

@@ -16,7 +16,7 @@ import { SubmitButton } from "@/components/ui/submit-button";
 import { gradeOptions, schoolStageLabels, type SchoolStage } from "@/lib/config/subjects";
 import { timezoneOptions } from "@/lib/config/timezones";
 import { weekdayLabel } from "@/lib/domain/dates";
-import { type ActionState, initialActionState } from "@/lib/validation/common";
+import { type ActionState, initialActionState } from "@/lib/validation/action-state";
 import { dailyGoalOptions, difficultyOptions, goalOptions, periodOptions } from "@/lib/validation/onboarding";
 
 import {

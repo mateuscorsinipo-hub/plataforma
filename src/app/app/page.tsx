@@ -173,7 +173,7 @@ async function Dashboard() {
                 tarefas de cada dia.
               </p>
               <Button asChild size="sm">
-                <Link href="/app/plano/novo">
+                <Link href="/app/plano">
                   <CalendarPlusIcon />
                   Criar plano de estudos
                 </Link>
@@ -402,7 +402,7 @@ async function Dashboard() {
 function WelcomeCard() {
   const steps = [
     { href: "/app/estudio", icon: SparklesIcon, title: "Transforme um material", text: "Envie um PDF, slides ou foto do caderno e gere um resumo." },
-    { href: "/app/plano/novo", icon: CalendarPlusIcon, title: "Monte seu plano", text: "Tarefas diárias até a data da prova." },
+    { href: "/app/plano", icon: CalendarPlusIcon, title: "Monte seu plano", text: "Tarefas diárias até a data da prova." },
     { href: "/app/flashcards/novo", icon: LayersIcon, title: "Crie flashcards", text: "Manualmente ou a partir do seu material." },
   ];
   return (

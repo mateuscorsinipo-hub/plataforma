@@ -1,15 +1,8 @@
 import { z } from "zod";
 
-export const contactTopics = {
-  support: "Ajuda com a conta ou o app",
-  privacy: "Pedido sobre dados pessoais (LGPD)",
-  copyright: "Direitos autorais (pedido de remoção)",
-  report: "Denunciar conteúdo ou usuário",
-  partnership: "Escolas e parcerias",
-  other: "Outro assunto",
-} as const;
+import { type ContactTopic, contactTopics } from "@/lib/validation/contact-topics";
 
-export type ContactTopic = keyof typeof contactTopics;
+export { type ContactTopic, contactTopics } from "@/lib/validation/contact-topics";
 
 export const contactSchema = z
   .object({

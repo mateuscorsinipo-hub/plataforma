@@ -172,6 +172,8 @@ export function StudioWorkspace({
               accept={studyAccept}
               className="sr-only"
               tabIndex={-1}
+              aria-hidden="true"
+              aria-label="Escolher arquivos"
               onChange={(event) => {
                 void upload(Array.from(event.target.files ?? []));
                 event.target.value = "";
@@ -189,6 +191,8 @@ export function StudioWorkspace({
                   capture="environment"
                   className="sr-only"
                   tabIndex={-1}
+                  aria-hidden="true"
+                  aria-label="Tirar foto"
                   onChange={(event) => {
                     void upload(Array.from(event.target.files ?? []));
                     event.target.value = "";

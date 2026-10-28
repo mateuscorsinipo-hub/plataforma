@@ -5,6 +5,9 @@ const supabaseOrigin = new URL(supabaseUrl);
 const supabaseWs = `${supabaseOrigin.protocol === "https:" ? "wss" : "ws"}://${supabaseOrigin.host}`;
 
 const isDev = process.env.NODE_ENV !== "production";
+// Build de produção servido por http (CI, teste local): forçar https quebraria redirecionamentos.
+const servedOverHttp = (process.env.NEXT_PUBLIC_SITE_URL ?? "").startsWith("http://");
+const enforceHttps = !isDev && !servedOverHttp;
 
 // CSP sem nonce para manter as páginas estáticas cacheáveis. Scripts externos não
 // são permitidos; uploads vão direto ao Supabase Storage por URL assinada.
@@ -22,7 +25,7 @@ const contentSecurityPolicy = [
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
-  ...(isDev ? [] : ["upgrade-insecure-requests"]),
+  ...(enforceHttps ? ["upgrade-insecure-requests"] : []),
 ].join("; ");
 
 const securityHeaders = [
@@ -32,7 +35,7 @@ const securityHeaders = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=()" },
   { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
-  ...(isDev ? [] : [{ key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" }]),
+  ...(enforceHttps ? [{ key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" }] : []),
 ];
 
 const nextConfig: NextConfig = {

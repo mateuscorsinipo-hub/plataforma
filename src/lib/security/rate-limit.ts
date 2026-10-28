@@ -10,7 +10,15 @@ export type RateLimitRule = { limit: number; windowSeconds: number };
 export const rateLimits = {
   contactForm: { limit: 5, windowSeconds: 3600 },
   signUp: { limit: 8, windowSeconds: 3600 },
-  signIn: { limit: 20, windowSeconds: 900 },
+  /** Por conta (e-mail) + IP: contém força bruta numa conta específica. */
+  signIn: { limit: 10, windowSeconds: 900 },
+  /**
+   * Por conta, de qualquer IP: teto para ataques distribuídos (ou com IP forjado) contra uma conta.
+   * Quem for bloqueado por um ataque ainda entra pelo link de "esqueci minha senha".
+   */
+  signInAccount: { limit: 30, windowSeconds: 900 },
+  /** Por IP: alto o bastante para uma turma inteira atrás do mesmo IP (NAT), baixo para ataques em massa. */
+  signInIp: { limit: 300, windowSeconds: 900 },
   passwordReset: { limit: 5, windowSeconds: 3600 },
   aiChat: { limit: 30, windowSeconds: 60 },
   aiGeneration: { limit: 10, windowSeconds: 60 },

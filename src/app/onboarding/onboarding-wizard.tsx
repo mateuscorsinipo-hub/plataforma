@@ -16,8 +16,8 @@ import { SubmitButton } from "@/components/ui/submit-button";
 import { gradeOptions, schoolStageLabels, type SchoolStage } from "@/lib/config/subjects";
 import { weekdayLabel } from "@/lib/domain/dates";
 import { useBrowserTimezone, useToday } from "@/lib/hooks/use-today";
-import { CHILD_AGE_LIMIT, ageOn } from "@/lib/validation/auth";
-import { initialActionState } from "@/lib/validation/common";
+import { CHILD_AGE_LIMIT, ageOn } from "@/lib/validation/age";
+import { initialActionState } from "@/lib/validation/action-state";
 import { dailyGoalOptions, difficultyOptions, goalOptions, periodOptions } from "@/lib/validation/onboarding";
 
 import { completeOnboarding } from "./actions";

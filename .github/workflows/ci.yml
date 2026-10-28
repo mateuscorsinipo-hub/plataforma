@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  qualidade:
+    name: Tipos, lint e testes unitários
+    # PRs do próprio repositório já rodam pelo push; aqui só entram PRs de forks.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npx vitest run --project unit
+
+  integracao:
+    name: Banco, build e ponta a ponta
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      - name: Supabase local com todas as migrações aplicadas do zero
+        run: npx supabase start
+
+      # Só valores do Supabase local, gerados agora; nenhum segredo de produção entra no CI.
+      - name: Ambiente de teste
+        run: |
+          eval "$(npx supabase status -o env)"
+          {
+            echo "NEXT_PUBLIC_SITE_URL=http://localhost:3000"
+            echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL"
+            echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$PUBLISHABLE_KEY"
+            echo "SUPABASE_SECRET_KEY=$SECRET_KEY"
+            echo "SUPABASE_DB_URL=$DB_URL"
+            echo "APP_HASH_SECRET=$(openssl rand -hex 32)"
+          } > .env.local
+
+      - name: Testes de banco (RLS, fluxos e auditoria de segurança do esquema)
+        run: npx vitest run --project db
+
+      - name: Build de produção (inclui a busca por segredos no que vai para o navegador)
+        run: npm run build
+
+      - name: Navegador do Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Testes ponta a ponta (desktop e celular)
+        run: npm run test:e2e
+
+      - name: Relatório do Playwright
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7

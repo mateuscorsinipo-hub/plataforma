@@ -95,7 +95,6 @@ export function CalendarView({
                       type="button"
                       role="gridcell"
                       aria-selected={d.date === selected}
-                      aria-label={`${selectedLabels[d.date]}: ${d.events.length} eventos, ${d.tasks.length} tarefas`}
                       onClick={() => setSelected(d.date)}
                       className={cn(
                         "flex min-h-16 flex-col items-stretch gap-1 border-r border-border p-1.5 text-left transition-colors last:border-r-0 hover:bg-muted/60 sm:min-h-24",
@@ -103,6 +102,8 @@ export function CalendarView({
                         d.date === selected && "bg-secondary/60",
                       )}
                     >
+                      {/* Data completa e totais só para leitores de tela; o texto visível fica no meio do nome. */}
+                      <span className="sr-only">{selectedLabels[d.date]}: </span>
                       <span
                         className={cn(
                           "flex size-7 items-center justify-center self-start rounded-full text-sm font-semibold",
@@ -124,6 +125,9 @@ export function CalendarView({
                             {d.tasks.length} {d.tasks.length === 1 ? "tarefa" : "tarefas"}
                           </span>
                         ) : null}
+                      </span>
+                      <span className="sr-only">
+                        , {d.events.length} {d.events.length === 1 ? "evento" : "eventos"}, {d.tasks.length} {d.tasks.length === 1 ? "tarefa" : "tarefas"}
                       </span>
                       <span className="flex gap-0.5 sm:hidden" aria-hidden="true">
                         {hasExam ? <span className="size-1.5 rounded-full bg-destructive" /> : null}

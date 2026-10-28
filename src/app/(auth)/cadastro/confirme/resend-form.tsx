@@ -7,7 +7,7 @@ import { Alert } from "@/components/ui/feedback";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitButton } from "@/components/ui/submit-button";
-import { initialActionState } from "@/lib/validation/common";
+import { initialActionState } from "@/lib/validation/action-state";
 
 import { resendConfirmation } from "../../actions";
 

@@ -8,8 +8,8 @@ import { Field, fieldA11y } from "@/components/ui/field";
 import { Alert } from "@/components/ui/feedback";
 import { Input, NativeSelect, Textarea } from "@/components/ui/input";
 import { SubmitButton } from "@/components/ui/submit-button";
-import { initialActionState } from "@/lib/validation/common";
-import { type ContactTopic, contactTopics } from "@/lib/validation/contact";
+import { initialActionState } from "@/lib/validation/action-state";
+import { type ContactTopic, contactTopics } from "@/lib/validation/contact-topics";
 
 import { sendContactMessage } from "./actions";
 

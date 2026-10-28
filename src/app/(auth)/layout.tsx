@@ -29,7 +29,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             ))}
           </ul>
         </div>
-        <p className="text-sm text-[#cfdbff]">Respostas de IA podem conter erros. Confira informações importantes.</p>
+        <p className="text-sm text-[#e3eaff]">Respostas de IA podem conter erros. Confira informações importantes.</p>
       </aside>
       <main id="conteudo" className="flex flex-col items-center px-4 py-10 sm:px-8 lg:justify-center">
         <Link href="/" className="mb-10 rounded-lg lg:hidden" aria-label="Grifo, página inicial">

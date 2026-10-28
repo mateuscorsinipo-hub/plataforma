@@ -29,9 +29,9 @@ export async function TopbarWidgets() {
       <Link
         href="/app/conquistas"
         className="hidden h-10 items-center rounded-full bg-secondary px-3 text-sm font-bold text-secondary-foreground sm:inline-flex"
-        aria-label={`${shell.xpTotal} pontos de experiência, nível ${shell.level}`}
       >
         {shell.xpTotal.toLocaleString("pt-BR")} XP · nível {shell.level}
+        <span className="sr-only"> (pontos de experiência; ver conquistas)</span>
       </Link>
       <Link
         href="/app/notificacoes"

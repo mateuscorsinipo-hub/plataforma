@@ -1,14 +1,6 @@
 import { z } from "zod";
 
-/** Estado padrão devolvido por Server Actions usadas com useActionState. */
-export type ActionState = {
-  ok?: boolean;
-  message?: string;
-  error?: string;
-  fieldErrors?: Record<string, string[] | undefined>;
-};
-
-export const initialActionState: ActionState = {};
+export { type ActionState, initialActionState } from "@/lib/validation/action-state";
 
 export function fieldErrorsOf(error: z.ZodError): Record<string, string[] | undefined> {
   return z.flattenError(error).fieldErrors as Record<string, string[] | undefined>;

@@ -9,9 +9,9 @@ import { Alert } from "@/components/ui/feedback";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitButton } from "@/components/ui/submit-button";
-import { CHILD_AGE_LIMIT, ageOn } from "@/lib/validation/auth";
+import { CHILD_AGE_LIMIT, ageOn } from "@/lib/validation/age";
 import { useToday } from "@/lib/hooks/use-today";
-import { initialActionState } from "@/lib/validation/common";
+import { initialActionState } from "@/lib/validation/action-state";
 
 import { signUp } from "../actions";
 import { GoogleButton } from "../google-button";

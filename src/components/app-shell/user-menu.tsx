@@ -28,14 +28,13 @@ export function UserMenu({
 }) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger
-        className="cursor-pointer rounded-full focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/40"
-        aria-label="Abrir menu da conta"
-      >
+      {/* O nome acessível começa pelo texto visível (as iniciais), como pede o critério 2.5.3 da WCAG. */}
+      <DropdownMenuTrigger className="cursor-pointer rounded-full focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/40">
         <Avatar className="size-10">
           {safeAvatarUrl(avatarUrl) ? <AvatarImage src={safeAvatarUrl(avatarUrl)!} alt="" /> : null}
           <AvatarFallback>{initialsOf(displayName)}</AvatarFallback>
         </Avatar>
+        <span className="sr-only">: menu da conta</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-60">
         <DropdownMenuLabel className="normal-case tracking-normal">

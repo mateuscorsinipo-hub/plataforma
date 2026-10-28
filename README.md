@@ -81,12 +81,29 @@ npm run dev     # http://localhost:3000
 npm run typecheck   # next typegen + tsc
 npm run lint
 npm test            # unidade + integração com o banco (requer supabase start)
-npm run test:e2e    # Playwright (requer app e Supabase rodando)
+npm run build       # build de produção + busca de segredos no que vai para o navegador
+npm run test:e2e    # Playwright, desktop e celular (requer supabase start; usa o app em :3000 ou sobe `npm start`)
 ```
 
-Os testes de banco (`tests/db`) criam usuários reais no Supabase local e verificam isolamento entre
-usuários (RLS), privilégios de coluna, funções exclusivas do servidor (XP, consumo, visualizações),
-moderação, correção de quizzes e prazos de simulado. Sem o Supabase local eles são pulados.
+- **Banco** (`tests/db`): criam usuários reais no Supabase local e verificam isolamento entre usuários (RLS),
+  privilégios de coluna, funções exclusivas do servidor (XP, consumo, visualizações), moderação, correção de
+  quizzes e prazos de simulado. Sem o Supabase local eles são pulados.
+- **Auditoria do esquema** (`tests/db/security-audit.test.ts`): a cada execução revisa o banco inteiro — RLS em
+  todas as tabelas, `search_path` fixo em todas as funções, funções privilegiadas abertas a visitantes ou a
+  pessoas logadas só quando estão na lista revisada (com o motivo ao lado), views que ignoram a RLS só as
+  revisadas, nenhuma escrita de cliente em tabelas do servidor nem em colunas sensíveis, nenhum `TRUNCATE` para
+  clientes e só o bucket de avatares público. Conecta direto no Postgres local (`SUPABASE_DB_URL`; padrão
+  `postgresql://postgres:postgres@127.0.0.1:54322/postgres`, o do `supabase start`).
+- **Ponta a ponta** (`tests/e2e`): páginas públicas e do app passam pelo axe (WCAG 2.1 AA, violações sérias e
+  críticas), sem rolagem lateral no celular; todos os links internos são seguidos atrás de 404; rotas protegidas,
+  redirecionamento aberto e uma jornada de estudante (baralho, revisão, pasta, material). Na primeira vez, rode
+  `npx playwright install chromium`.
+- **Segredos no navegador**: `npm run build` termina com `scripts/check-client-secrets.mjs`, que procura nos
+  arquivos entregues ao navegador o valor de cada variável só de servidor presente no ambiente e formatos
+  conhecidos de chaves secretas. Se achar algo, o build falha (inclusive na hospedagem).
+- **CI** (`.github/workflows/ci.yml`): tipos, lint e testes de unidade; depois sobe o Supabase local com as
+  migrações do zero e roda os testes de banco, o build e os testes ponta a ponta. Nenhum segredo de produção
+  entra no CI: o ambiente usa só as chaves do Supabase local, geradas na hora.
 
 ## Build de produção
 
@@ -105,6 +122,11 @@ npm run build && npm start
    segredo no cabeçalho `Authorization`. No plano Hobby da Vercel só há execução diária: os lembretes do
    calendário (a cada 10 min) exigem o plano Pro ou outro agendador chamando `GET /api/cron/lembretes` com
    `Authorization: Bearer <CRON_SECRET>`.
+7. Em **Authentication → Rate Limits**, aumente o limite de logins e cadastros por IP. O login passa pelo
+   servidor do Next, então o Supabase Auth enxerga o IP da hospedagem, não o de cada estudante: com o padrão,
+   poucas dezenas de logins em 5 minutos bloqueariam todo mundo. Quem limita tentativas de verdade é o app,
+   por conta + IP (10 a cada 15 min) e por IP (300 a cada 15 min), contando o IP real da requisição. Uma escola
+   inteira atrás do mesmo IP cabe nesse limite.
 
 ### Rotinas agendadas
 
@@ -253,6 +275,8 @@ tests/
 ## Segurança e privacidade
 
 - RLS em todas as tabelas; tabelas filhas usam FKs compostas `(id, user_id)` para impedir vínculos entre usuários.
+  Tabelas que só o servidor altera não dão privilégio de escrita a clientes, então nem uma política criada por
+  engano abre a escrita; a auditoria automática do esquema falha se alguma regra desta lista for quebrada.
 - Colunas sensíveis (status de conta, contadores, status de moderação, notas) não são graváveis pelo cliente.
 - XP, consumo de IA, visualizações e moderação só por funções executáveis com a chave secreta, no servidor.
 - Arquivos em bucket privado; envio apenas por URL assinada emitida pelo servidor; tipo real conferido pelos

@@ -32,7 +32,16 @@ export async function signIn(_prev: ActionState, formData: FormData): Promise<Ac
   if (!parsed.success) {
     return { error: "Revise os campos destacados.", fieldErrors: fieldErrorsOf(parsed.error) };
   }
-  if (!(await checkRateLimit(await ipKey("signin"), rateLimits.signIn))) {
+  // Três limites: conta + IP (força bruta comum), conta de qualquer IP (ataque distribuído)
+  // e IP (escolas e redes móveis compartilham IP, então este é alto). O e-mail entra só
+  // como hash no nome da chave.
+  const email = parsed.data.email.toLowerCase();
+  const [pairOk, accountOk, ipOk] = await Promise.all([
+    checkRateLimit(`signin-pair:${keyedHash(`${email}|${await getClientIp()}`).slice(0, 32)}`, rateLimits.signIn),
+    checkRateLimit(`signin-account:${keyedHash(email).slice(0, 32)}`, rateLimits.signInAccount),
+    checkRateLimit(await ipKey("signin"), rateLimits.signInIp),
+  ]);
+  if (!pairOk || !accountOk || !ipOk) {
     return { error: "Muitas tentativas de entrar. Aguarde alguns minutos e tente de novo." };
   }
 
